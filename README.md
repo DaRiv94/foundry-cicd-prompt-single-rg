@@ -162,7 +162,7 @@ Mac / Linux (Bash)
 
 It creates one managed identity in the resource group with three federated credentials, one per GitHub Environment. Each credential trusts only jobs that run inside that Environment, so the `prod` job is the only job that gets a token after a reviewer approves. The identity gets Foundry Owner on the resource group and nothing else. Foundry Owner covers `az deployment group create`, the Foundry account, and the agents inside it.
 
-4. Wait about ten minutes for the role assignment to propagate, then push a change or start the Release workflow from the Actions tab.
+4. Wait about ten minutes for the role assignment to propagate, then push a change or start the Release workflow from the Actions tab. If the first run fails at the login step with "No subscriptions found", it was too early. Rerun it.
 
 Federated credential subjects: GitHub issues an immutable subject for repos created after July 2026, `repo:OWNER@OWNER-ID/REPO@REPO-ID:environment:NAME`. The script reads both ids with `gh api` and builds that subject. If the first login fails with `AADSTS70021`, the error shows the subject GitHub sent. Compare it with `az identity federated-credential list`.
 
@@ -232,7 +232,7 @@ The script lists the resource group, asks you to type DELETE, and deletes it. Th
 
 ## When to use this topology
 
-Use one project for all three environments when one small team owns the agent and cheap, fast setup matters more than isolation. Everything shares one account, one quota, and one set of role assignments. A mistake in dev cannot break prod's agent versions, but it can spend prod's quota, and anyone with access to the project sees all three agents.
+Use one project for all three environments when one small team owns the agent and cheap, fast setup matters more than isolation. Everything shares one account, one quota, and one set of role assignments. A mistake in dev cannot break prod's agent versions, but it can spend prod's quota, and anyone with access to the project sees all three agents. Every stage of every run also deploys into the same account, and an account accepts one deployment at a time, so the stage workflow serializes all jobs of this project with a concurrency group. Two branches pushed at once take turns.
 
 Do not use it when different teams need different access to dev and prod, when compliance needs separate audit trails per environment, or when prod needs its own capacity. Project `01-prompt-agent-multi-rg` shows the same agent with three resource groups.
 
