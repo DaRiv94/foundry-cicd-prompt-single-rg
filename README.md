@@ -182,11 +182,11 @@ Nothing reaches prod without a passing gate on the exact commit and a human appr
 
 See the gate do its job once.
 
-1. On a branch, delete rule 3 from `agent/instructions.md` (the "I will connect you with a team member" sentence).
-2. Merge it. The test job's evaluation step fails the refund question, prints `Pass rate 5/6 = 83%`, and passes. One miss is inside the 80 percent tolerance. Now also change the Sunday hours to "9 AM to 2 PM Sunday" and merge again. Two misses is `4/6 = 67%`, the step exits 1, and the prod job never starts.
+1. On a branch, delete rule 3 from `agent/instructions.md` (the "I will connect you with a team member" sentence) and change the Sunday hours to "9 AM to 2 PM Sunday".
+2. Merge it. The test job's evaluation step fails two of six rows, prints `Pass rate 4/6 = 67%`, exits 1, and the prod job never starts. Prod keeps serving the pinned version.
 3. Restore both edits and merge. The gate passes and prod gets the fixed version.
 
-The gate tolerates one miss on purpose. Six rows is small. With a real evaluation set you raise the row count and the threshold together.
+The gate tolerates one miss on purpose, so a single wrong row passes at 83 percent. Six rows is small. With a real evaluation set you raise the row count and the threshold together.
 
 ## Rollback
 

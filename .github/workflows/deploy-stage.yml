@@ -21,6 +21,12 @@ jobs:
     name: ${{ inputs.env }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.env }}
+    # Every stage of every run deploys into the same Foundry account in this topology, and the
+    # account accepts one deployment at a time (RequestConflict otherwise). So all stage jobs of
+    # this project queue up behind each other, whichever workflow or branch started them.
+    concurrency:
+      group: deploy-${{ vars.WORKLOAD }}
+      cancel-in-progress: false
     env:   # the same names the scripts read from .env on a laptop
       AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
       REGION_CODE: ${{ vars.REGION_CODE }}
