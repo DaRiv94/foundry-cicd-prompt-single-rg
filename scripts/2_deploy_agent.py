@@ -22,6 +22,7 @@ args = parser.parse_args()
 
 rc, wl = os.environ["REGION_CODE"], os.environ["WORKLOAD"]
 endpoint = f"https://msf-ais-{rc}-{wl}.services.ai.azure.com/api/projects/prj-ais-{rc}-{wl}"
+# endpoint = "https://msf-ais-eus-pasingle.services.ai.azure.com/api/projects/prj-ais-eus-pasingle"
 agent = f"{os.environ['AGENT_NAME']}-{args.env}"  # one project, three agents: the suffix is the environment
 project = AIProjectClient(endpoint=endpoint, credential=DefaultAzureCredential())
 
