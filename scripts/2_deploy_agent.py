@@ -31,7 +31,6 @@ version = project.agents.create_version(
     definition=PromptAgentDefinition(
         model="chat-model",
         instructions=(ROOT / "agent" / "instructions.md").read_text(encoding="utf-8"),
-        tools=[WebSearchTool()]
     ),
     metadata={"env": args.env, "git_sha": os.environ.get("GITHUB_SHA", "local")[:12]},
 )
